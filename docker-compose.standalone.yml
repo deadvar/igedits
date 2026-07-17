@@ -1,0 +1,34 @@
+services:
+  clips:
+    build:
+      context: ./simple_app
+    container_name: igedits-simple
+    ports:
+      - "3000:8080"
+    environment:
+      DATA_DIR: /data
+      WHISPER_MODEL: ${WHISPER_MODEL:-small}
+      WHISPER_LANGUAGE: ${WHISPER_LANGUAGE:-ru}
+      WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-int8}
+      WHISPER_CPU_THREADS: ${WHISPER_CPU_THREADS:-2}
+      MAX_CLIPS: ${MAX_CLIPS:-5}
+      MIN_CLIP_SECONDS: ${MIN_CLIP_SECONDS:-25}
+      MAX_CLIP_SECONDS: ${MAX_CLIP_SECONDS:-55}
+      FFMPEG_PRESET: ${FFMPEG_PRESET:-veryfast}
+      FFMPEG_CRF: ${FFMPEG_CRF:-23}
+      LLM_API_URL: ${LLM_API_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+    volumes:
+      - simple_data:/data
+      - whisper_models:/models
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 3500M
+
+volumes:
+  simple_data:
+  whisper_models:
