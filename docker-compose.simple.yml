@@ -1,0 +1,100 @@
+services:
+  frontend:
+    build:
+      args:
+        - NEXT_PUBLIC_SELF_HOST=true
+        - NEXT_PUBLIC_FREE_PLAN_TASK_LIMIT=0
+        - NEXT_PUBLIC_PRO_PLAN_TASK_LIMIT=0
+        - NEXT_PUBLIC_LANDING_ONLY_MODE=false
+    environment:
+      - NEXT_PUBLIC_SELF_HOST=true
+      - NEXT_PUBLIC_FREE_PLAN_TASK_LIMIT=0
+      - NEXT_PUBLIC_PRO_PLAN_TASK_LIMIT=0
+      - STRIPE_SECRET_KEY=
+      - STRIPE_WEBHOOK_SECRET=
+      - STRIPE_PRICE_ID=
+      - STRIPE_CHECKOUT_URL=
+      - STRIPE_CUSTOMER_PORTAL_URL=
+      - RESEND_API_KEY=
+
+  backend:
+    ports: []
+    platform: null
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.10"
+          memory: 128M
+    volumes:
+      - uploads:/app/uploads
+      - clips:/app/clips
+      - ./backend/fonts:/app/fonts:ro
+      - ./backend/transitions:/app/transitions:ro
+    environment:
+      - SELF_HOST=true
+      - TRANSCRIPT_LANGUAGE=ru
+      - ROMANIZE_TRANSCRIPT=false
+      - VIDEO_ENCODER=cpu
+      - DEFAULT_PROCESSING_MODE=fast
+      - FAST_MODE_MAX_CLIPS=${FAST_MODE_MAX_CLIPS:-5}
+      - PROCESSING_TASK_TIMEOUT_SECONDS=${PROCESSING_TASK_TIMEOUT_SECONDS:-7200}
+      - FREE_PLAN_TASK_LIMIT=0
+      - PRO_PLAN_TASK_LIMIT=0
+      - STRIPE_SECRET_KEY=
+      - RESEND_API_KEY=
+      - PEXELS_API_KEY=
+      - DISCORD_FEEDBACK_WEBHOOK_URL=
+      - DISCORD_SALES_WEBHOOK_URL=
+      - MAKE_INSTAGRAM_WEBHOOK_URL=
+      - PUBLIC_BASE_URL=
+
+  worker:
+    platform: null
+    deploy:
+      resources:
+        limits:
+          cpus: "1.50"
+          memory: 2300M
+        reservations:
+          cpus: "0.50"
+          memory: 768M
+    volumes:
+      - uploads:/app/uploads
+      - clips:/app/clips
+      - ./backend/fonts:/app/fonts:ro
+      - ./backend/transitions:/app/transitions:ro
+    environment:
+      - SELF_HOST=true
+      - TRANSCRIPT_LANGUAGE=ru
+      - ROMANIZE_TRANSCRIPT=false
+      - VIDEO_ENCODER=cpu
+      - DEFAULT_PROCESSING_MODE=fast
+      - FAST_MODE_MAX_CLIPS=${FAST_MODE_MAX_CLIPS:-5}
+      - PROCESSING_TASK_TIMEOUT_SECONDS=${PROCESSING_TASK_TIMEOUT_SECONDS:-7200}
+      - FREE_PLAN_TASK_LIMIT=0
+      - PRO_PLAN_TASK_LIMIT=0
+      - STRIPE_SECRET_KEY=
+      - RESEND_API_KEY=
+      - PEXELS_API_KEY=
+      - DISCORD_FEEDBACK_WEBHOOK_URL=
+      - DISCORD_SALES_WEBHOOK_URL=
+      - MAKE_INSTAGRAM_WEBHOOK_URL=
+      - PUBLIC_BASE_URL=
+
+  redis:
+    ports: []
+    deploy:
+      resources:
+        limits:
+          cpus: "0.20"
+          memory: 160M
+
+  postgres:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.30"
+          memory: 384M
